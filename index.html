@@ -1,0 +1,483 @@
+<!doctype html>
+<html lang="es">
+
+	<head>
+		<meta charset="utf-8">
+
+		<title>Ansible, DevOps simplificado</title>
+
+		<meta name="description" content="Ansible, DevOps simplificado">
+		<meta name="author" content="@jhvaras">
+
+		<meta name="apple-mobile-web-app-capable" content="yes" />
+		<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+
+		<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
+		<link rel="stylesheet" href="css/reveal.min.css">
+		<link rel="stylesheet" href="css/theme/ansible.css" id="theme">
+
+		<!-- For syntax highlighting -->
+		<link rel="stylesheet" href="lib/css/zenburn.css">
+
+		<!-- If the query includes 'print-pdf', use the PDF print sheet -->
+		<script>
+			document.write( '<link rel="stylesheet" href="css/print/' + ( window.location.search.match( /print-pdf/gi ) ? 'pdf' : 'paper' ) + '.css" type="text/css" media="print">' );
+		</script>
+
+		<!--[if lt IE 9]>
+		<script src="lib/js/html5shiv.js"></script>
+		<![endif]-->
+	</head>
+
+	<body>
+
+		<div class="reveal">
+
+			<!-- Any section element inside of this container is displayed as a slide -->
+			<div class="slides">
+				<section>
+					<h1>Ansible</h1>
+					<h2>DevOps simplificado</h2>
+					<p>
+						<small>por <a href="http://jhvaras.com">@jhvaras</a></small>
+					</p>
+				</section>
+
+				<section>
+					<h3>soy</h3>
+					<p>backend dev</p>
+					<p>ops manager</p>
+					<p>cto @ veiss</p>
+					<h2>&hearts;</h2>
+					<p>web arch</p>
+					<p>automation</p>
+
+					<aside class="notes">
+						Oh hey, these are some notes. They'll be hidden in your presentation, but you can see them if you open the speaker notes window (hit 's' on your keyboard).
+					</aside>
+				</section>
+
+				<!-- Example of nested vertical slides -->
+				<section data-background="whitesmoke" data-transition="linear" data-background-transition="slide">
+					<section data-markdown>
+						<script type="text/template">
+							### Una historia de dev & ops ...
+						</script>
+					</section>
+					<section>
+						<img src="img/story/1.png" />
+					</section>
+					<section>
+						<img src="img/story/2.png" />
+					</section>
+					<section>
+						<img src="img/story/3.png" />
+					</section>
+					<section>
+						<img src="img/story/4.png" />
+					</section>
+					<section>
+						<img src="img/story/5.png" />
+					</section>
+					<section>
+						<img src="img/story/6.png" />
+					</section>
+					<section>
+						<img src="img/story/1.png" />
+					</section>
+					<section>
+						<img src="img/story/8.png" />
+					</section>
+					<section>
+						<img width="100%" src="img/workedfine.jpg" />
+					</section>
+				</section>
+
+					<section data-background="whitesmoke">
+						<h3 class="fragment current-visible">Dev != Ops => problemas</h3>
+						<h3 class="fragment current-visible">Dev + Ops</h3>
+						<h1 class="fragment">DevOps</h1>
+					</section>
+					
+					<section data-background="whitesmoke" data-markdown>
+							<script type="text/template">
+								### Operaciones habituales 
+
+								---
+
+								- Provisionar servidores
+								- Manejar infraestructura
+								- Tareas de mantenimiento
+								- Desplegar aplicaciones
+								
+								---
+
+								#### infrastructure as code
+							</script>
+					</section>
+
+					<section data-background="whitesmoke">
+						<h3>Manejo de tareas & infraestructura</h3>
+						<img src="img/tl.png" style="border:0;" />
+					</section>
+
+
+				<section data-markdown data-transition="zoom">
+					<script type="text/template">
+						# Ansible
+
+						---
+
+						#### provision + deploy + tasks + orchestration
+
+						---
+
+						## simple! 
+					</script>
+				</section>
+
+				<section data-markdown>
+					<script type="text/template">
+						## Ejemplo
+
+							ansible all -m ping
+					</script>
+				</section>
+
+				<section data-markdown>
+					<script type="text/template">
+						## Requisitos
+
+						---
+
+						ssh
+
+						**manager**: python
+
+						**target**: nada!
+
+					</script>
+				</section>
+
+				<section data-markdown>
+					<script type="text/template">
+						## Conceptos clave
+
+						---
+
+						### inventory
+						
+						### module
+
+						### playbook
+					</script>
+				</section>
+
+				<section data-markdown>
+					<script type="text/template">
+						### Inventory 
+
+						---
+
+						Conjunto de hosts y grupos
+
+								[webservers]
+								foo.example.com
+								bar.example.com
+
+								[dbservers]
+								one.example.com
+								two.example.com	
+					</script>
+				</section>
+
+				<section data-markdown>
+					<script type="text/template">
+						### Module
+
+						---
+
+						Functionalidad para ejecutar tareas
+
+						[Ejemplo:](http://docs.ansible.com/list_of_all_modules.html)
+
+							command - Executes a command on a remote node
+							copy - Copies files to remote locations.
+							cron - Manage cron.d and crontab entries.
+							...
+
+
+					</script>
+				</section>
+
+				<section data-markdown>
+					<script type="text/template">
+						### Playbook
+
+						---
+
+						Archivo **YAML** que agrupa *tareas* y *handlers*
+
+							---
+							- hosts: dbservers
+	
+							  tasks:
+
+							    - name: sample db
+								  mysql_db: name=xxx state=present
+								  notify: reload mysql
+								
+								- name: samle db-user
+								  mysql_user: name=yyy state=present password=zzz priv=xxx.*:ALL
+								  notify: reload mysql
+
+							  handlers:
+
+							    - name: reload mysql
+								  service: name=mysql state=reloaded   
+					</script>
+				</section>
+
+				<section data-markdown>
+					<script type="text/template">
+						## Uso
+
+							# Comandos AdHoc:
+
+							ansible webservers -m service -a "name=httpd state=restarted"
+
+							# Playbooks:
+
+							ansible-playbook deploy_loremipsum.yml
+
+
+					</script>
+				</section>
+
+				<section data-markdown>
+					<script type="text/template">
+						## Conceptos comunes
+
+						---
+
+						- variables
+						- flujos de control
+						- plantillas
+					</script>
+				</section>
+
+				<section data-markdown>
+					<script type="text/template">
+						### variables
+
+						---
+
+						#### Definidas en
+
+						- inventory
+						- playbook
+						- ficheros o roles
+
+
+							vars:
+							  http_port: 80
+
+						#### Descubiertas
+					
+						`ansible_*`: datos del sistema 
+
+							ansible host -m setup
+						
+						#### Reservadas
+					</script>
+				</section>
+
+				<section data-markdown>
+					<script type="text/template">
+						### Flujos de control
+
+						---
+						
+						#### condiciones
+
+							- name: apagar en debian
+							  command: /sbin/shutdown -t now
+							  when: ansible_os_family == "Debian"
+
+						#### loops
+
+							- name: añadir varios usuarios
+							  user: name={{ item }} state=present
+						  	  with_items:
+							 	- testuser1
+							 	- testuser2
+					</script>
+				</section>
+
+				<section data-markdown>
+					<script type="text/template">
+						### Plantillas
+
+						---
+
+						Jinja2
+
+							template: src=templates/mysql-my-cnf.j2 dest=/etc/mysql/my.cnf
+					
+						.		
+
+							[client]
+							user=root
+							pass={{ mysql_root_password }}
+
+					</script>
+				</section>
+
+				<section data-markdown>
+					<script type="text/template">
+						### Extra 
+
+						---
+
+						- lookups
+						- prompts
+						- variables de entorno
+						- paralelismo
+						- rolling updates
+						- referenciar a otros host
+					</script>
+				</section>
+
+				<section data-markdown>
+					<script type="text/template">
+						### Organización y reutilización
+
+						---
+
+						#### include
+
+							tasks:
+ 							  - include: tasks/foo.yml
+
+						#### role
+
+								roles/
+								   role/
+									 files/
+									 templates/
+									 tasks/
+									 handlers/
+									 vars/
+									 meta/	
+
+						#### galaxy
+					</script>
+				</section>
+
+				<section data-markdown>
+					<script type="text/template">
+						## Demo 
+
+						---
+
+					</script>
+				</section>
+
+				<section data-markdown>
+					<script type="text/template">
+						## Objetivo 
+
+						Paridad de entornos
+
+						---
+						### desarrollo = producción
+						---
+					</script>
+				</section>
+
+				<section data-markdown data-background="#ddd">
+					<script type="text/template">
+							![yo uso mac](img/mac.jpg)
+					</script>
+				</section>
+
+				<section data-markdown>
+					<script type="text/template">
+						### Podemos empaquetar el entorno!
+
+						#### Opciones <!-- .element: class="fragment" -->
+
+						- VMs <!-- .element: class="fragment" -->
+						- LXCs <!-- .element: class="fragment" -->
+
+					</script>
+				</section>
+
+				<section data-markdown data-background="img/packer-bg.jpg" data-state="oscuro">
+					<script type="text/template">
+						### Packer! 
+
+						---
+
+						Builders para:
+
+						- Vagrant <!-- .element: class="fragment grow" -->
+						- Docker <!-- .element: class="fragment grow" -->
+						- VMWare
+						- Amazon EC2
+						- ... 
+					</script>
+				</section>
+
+				<section data-background="img/thats-all-folks.jpg" data-transition="zoom" data-transition-speed="slow">
+				</section>
+
+				<section data-transition="zoom">
+					<h1>Gracias!</h1> 
+
+					<br />
+					<br />
+					<h4>@jhvaras / jhvaras.com</h4>
+
+				</section>
+
+			</div>
+
+		</div>
+
+		<script src="lib/js/head.min.js"></script>
+		<script src="js/reveal.min.js"></script>
+
+		<script>
+
+			// Full list of configuration options available here:
+			// https://github.com/hakimel/reveal.js#configuration
+			Reveal.initialize({
+				controls: true,
+				progress: true,
+				history: true,
+				center: true,
+
+				theme: Reveal.getQueryHash().theme, // available themes are in /css/theme
+				transition: Reveal.getQueryHash().transition || 'default', // default/cube/page/concave/zoom/linear/fade/none
+
+				// Parallax scrolling
+				// parallaxBackgroundImage: 'https://s3.amazonaws.com/hakim-static/reveal-js/reveal-parallax-1.jpg',
+				// parallaxBackgroundSize: '2100px 900px',
+
+				// Optional libraries used to extend on reveal.js
+				dependencies: [
+					{ src: 'lib/js/classList.js', condition: function() { return !document.body.classList; } },
+					{ src: 'plugin/markdown/marked.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
+					{ src: 'plugin/markdown/markdown.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
+					{ src: 'plugin/highlight/highlight.js', async: true, callback: function() { hljs.initHighlightingOnLoad(); } },
+					{ src: 'plugin/zoom-js/zoom.js', async: true, condition: function() { return !!document.body.classList; } },
+					{ src: 'plugin/notes/notes.js', async: true, condition: function() { return !!document.body.classList; } }
+				]
+			});
+
+		</script>
+
+	</body>
+</html>
